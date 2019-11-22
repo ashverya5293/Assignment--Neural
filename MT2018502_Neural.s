@@ -1,5 +1,5 @@
-       ;MT2018502_Neural Network
-
+     ;Neural Network
+	; AISHVERYA KUMAR SHARMA MT2018502
   	AREA    appcode ,CODE,READONLY
 	IMPORT printMsg
     EXPORT __main
@@ -15,8 +15,9 @@ __main    FUNCTION
 	VLDR.F32 S6,=1; Temp variable to store the result of the factorial
 
 	VLDR.F32 S4,=1; Storing constant 1 in reg s4
-
-	MOV R10, #2	;Select the value according to the logic to be implemented.
+	VLDR.F32 S25,=0.5;
+	
+	MOV R10, #3	;Select the value according to the logic to be implemented.
 	BAL switch_case
 		
 switch_case		; switch-case equivalent
@@ -91,9 +92,9 @@ XNOR_logic
 	VLDR.F32 S10,=1
 	B compute  
 
-compute	VLDR.F32 S16,=1
-	VLDR.F32 S17,=0
-	VLDR.F32 S18,=0
+compute	VLDR.F32 S16,=1 ;input A of logic gate
+	VLDR.F32 S17,=0		;input B of logic gate
+	VLDR.F32 S18,=0		;input C of logic gate
 
 	VMUL.F32 S19,S7,S16;
 	VMUL.F32 S20,S8,S17;
@@ -109,10 +110,10 @@ exp   CMP R2,R3; 	Compare values of 'i' and 'n'
       BLE loop; 	if i < n goto loop
       B sigmoid_func;		else goto sigmoid function
 		
-loop    VMUL.F32 S1,S1,S2; temp = temp*x
-	VMOV.F32 S3,S1;
-        VMOV.F32 S5,R2; 	Moving bitstream from register R2 to floating register S5
-        VCVT.F32.U32 S5, S5;	Converting bitstream into floating point number
+loop  VMUL.F32 S1,S1,S2; temp = temp*x
+	  VMOV.F32 S3,S1;
+      VMOV.F32 S5,R2; 	Moving bitstream from register R2 to floating register S5
+      VCVT.F32.U32 S5, S5;	Converting bitstream into floating point number
 		
 	VMUL.F32 S6,S6,S5;	Computing factorial and store result in S6
         VDIV.F32 S3,S3,S6;	Divide temp by factorial S6 and store it back in temp
@@ -122,13 +123,22 @@ loop    VMUL.F32 S1,S1,S2; temp = temp*x
         B exp;	Again goto comparison
 
 sigmoid_func
-	VADD.F32 s14,s4,s0 ;	
-	VDIV.F32 S15,S0,S14;
+	VADD.F32 s14,s4,s0 ;	Calculating (1 + e^x)
+	VDIV.F32 S15,S0,S14;	Calculating value of sigmoid (e^x/(1+e^x))
 	
-	VCVT.U32.F32 S15,S15
-	VMOV.F32 R0,S15;
-	BL printMsg;	 		
+	;VCVT.U32.F32 S15,S15
+	VCMP.F32 S15,S25;	Comparing the result of sigmoid function with 0.5
+	VMRS APSR_NZCV, FPSCR
 	
+	BGT grt   ; Branch if S15 > 0.5
+	
+	MOV R0,#0;	If value of S15 <0.5 then move 0 into R0
+	BL printMsg;	
+	B stop
+	
+grt MOV R0,#1; If value of S15 > 0.5 then move 1 into R0
+	BL printMsg;	
+	B stop
 		
 stop    B stop
         ENDFUNC
