@@ -1,30 +1,167 @@
-     ;Neural Network
-	; AISHVERYA KUMAR SHARMA MT2018502
+      ;Neural Network
+ ; AISHVERYA KUMAR SHARMA MT2018502
+ 
   	AREA    appcode ,CODE,READONLY
-	IMPORT printMsg
+	IMPORT printMsg1
+	IMPORT printMsg2
+	IMPORT printMsg3
+	IMPORT printMsg4
+	IMPORT printMsg5
+	IMPORT printMsg4p
     EXPORT __main
     ENTRY
 __main    FUNCTION
-	MOV R2,#1; Counting Variable 'i'	
-    MOV R3,#20; Holding the Number of Terms in Series 'n'
+	MOV R4,#1; Counting Variable 'i'	
+    MOV R5,#25; Holding the Number of Terms in Series 'n'
         
 				
 	VLDR.F32 S0,=1 ; Used to store the final sum of the exponent(e^x)  
 	VLDR.F32 S1,=1; Temp variable to store intermediate multiplication result
+	VLDR.F32 S6,=1; Temp variable to store the result of the factorial
+	
+	VLDR.F32 S4,=1; Storing constant 1 in reg s4
+	VLDR.F32 S25,=0.5; Value to compare for deciding logic value 0 or 1 
 
+; Registers S7 to S8 will hold weights and bias value
+
+AND_logic	BL printMsg1
+	VLDR.F32 S7,=-0.1  ;Initializing values as per the data given in python file
+	VLDR.F32 S8,=0.2
+	VLDR.F32 S9,=0.2
+	VLDR.F32 S10,=-0.2
+	B compute
+		
+OR_logic	BL printMsg2
+	VLDR.F32 S7,=-0.1  ;Initializing values as per the data given in python file
+	VLDR.F32 S8,=0.7
+	VLDR.F32 S9,=0.7
+	VLDR.F32 S10,=-0.1
+	B compute
+		
+NOT_logic	BL printMsg3
+	VLDR.F32 S7,=0.5  ;Initializing values as per the data given in python file
+	VLDR.F32 S8,=-0.7
+	VLDR.F32 S9,=0
+	VLDR.F32 S10,=0.1
+	B compute
+		
+NAND_logic	BL printMsg4
+	VLDR.F32 S7,=0.6  ;Initializing values as per the data given in python file
+	VLDR.F32 S8,=-0.8
+	VLDR.F32 S9,=-0.8
+	VLDR.F32 S10,=0.3
+	B compute
+		
+NOR_logic	BL printMsg5
+	VLDR.F32 S7,=0.5  ;Initializing values as per the data given in python file
+	VLDR.F32 S8,=-0.7
+	VLDR.F32 S9,=-0.7
+	VLDR.F32 S10,=0.1
+	B compute
+		
+		
+compute	BL Data_Set1
+
+Data_Set1	MOV R0, #1; input A of logic gate
+			VMOV.F32 S16,R0; Shifting input A to fp register
+			VCVT.F32.S32 S16,S16; converting input A to signed fp number
+			
+			MOV R1, #0; input B of logic gate
+			VMOV.F32 S17, R1; Shifting input B to fp register
+			VCVT.F32.S32 S17,S17; converting input B to signed fp number
+			
+			MOV R2, #0; input C of logic gate
+			VMOV.F32 S18,R2; Shifting input C to fp register
+			VCVT.F32.S32 S18,S18; converting input C to signed fp number
+			B WEIGHT_CALCULATION
+			
+Data_Set2	MOV R0, #1; input A of logic gate
+			VMOV.F32 S16,R0; Shifting input A to fp register
+			VCVT.F32.S32 S16,S16; converting input A to signed fp number
+			MOV R1, #0; input B of logic gate
+			VMOV.F32 S17, R1; Shifting input B to fp register
+			VCVT.F32.S32 S17,S17; converting input B to signed fp number
+			MOV R2, #1; input C of logic gate
+			VMOV.F32 S18,R2; Shifting input C to fp register
+			VCVT.F32.S32 S18,S18; converting input C to signed fp number
+			B WEIGHT_CALCULATION
+			
+Data_Set3	MOV R0, #1; input A of logic gate
+			VMOV.F32 S16,R0; Shifting input A to fp register
+			VCVT.F32.S32 S16,S16; converting input A to signed fp number
+			MOV R1, #1; input B of logic gate
+			VMOV.F32 S17, R1; Shifting input B to fp register
+			VCVT.F32.S32 S17,S17; converting input B to signed fp number
+			MOV R2, #0; input C of logic gate
+			VMOV.F32 S18,R2; Shifting input C to fp register
+			VCVT.F32.S32 S18,S18; converting input C to signed fp number
+			B WEIGHT_CALCULATION
+			
+Data_Set4	MOV R0, #1; input A of logic gate
+			VMOV.F32 S16,R0; Shifting input A to fp register
+			VCVT.F32.S32 S16,S16; converting input A to signed fp number
+			MOV R1, #1; input B of logic gate
+			VMOV.F32 S17, R1; Shifting input B to fp register
+			VCVT.F32.S32 S17,S17; converting input B to signed fp number
+			MOV R2, #1; input C of logic gate
+			VMOV.F32 S18,R2; Shifting input C to fp register
+			VCVT.F32.S32 S18,S18; converting input C to signed fp number
+			B WEIGHT_CALCULATION
+
+WEIGHT_CALCULATION	VMUL.F32 S19,S7,S16;
+					VMOV.F32 S22,S19
+					VMUL.F32 S20,S8,S17
+					VADD.F32 S22, S22, S20
+					VMUL.F32 S21,S9,S18
+					VADD.F32 S22, S22, S21
+					VADD.F32 S22, S22, S10; Final value is computed and stored in S22		
+					B exp
+				
+exp   CMP R4,R5; 	Compare values of 'i' and 'n' 
+      BLE loop; 	if i < n goto loop
+      B sigmoid_func;		else goto sigmoid function
+		
+loop  VMUL.F32 S1,S1,S22; temp = temp*x
+	  VMOV.F32 S3,S1;
+      VMOV.F32 S5,R4; 	Moving bitstream from register R4 to floating register S5
+      VCVT.F32.S32 S5, S5;	Converting bitstream into floating point number
+		
+	VMUL.F32 S6,S6,S5;	Computing factorial and store result in S6
+    VDIV.F32 S3,S3,S6;	Divide temp by factorial S6 and store it back in temp
+    VADD.F32 S0,S0,S3;	Final exponential series result is stored in S0
+		
+    ADD R4,R4,#1;	Increment the counter variable 'i'
+    B exp;	Again goto comparison
+
+sigmoid_func 
+	VADD.F32 S14,S4,S0 ;	Calculating (1 + e^x)
+	VDIV.F32 S15,S0,S14;	Calculating value of sigmoid (e^x/(1+e^x))
+	VCMP.F32 S15,S25;	Comparing the result of sigmoid function with 0.5
+	VMRS.F32 APSR_NZCV, FPSCR
+	ITE HI
+	MOVHI R3,#1
+	MOVLS R3,#0
+	BL printMsg4p
+	
+	; Need to initialize the below four values as the data set will be changed four times for each LOGIC GATE 
+	
+	MOV R4,#1
+	VLDR.F32 S0,=1 ; Used to store the final sum of the exponent(e^x)  
+	VLDR.F32 S1,=1; Temp variable to store intermediate multiplication result
 	VLDR.F32 S6,=1; Temp variable to store the result of the factorial
 
-	VLDR.F32 S4,=1; Storing constant 1 in reg s4
-	VLDR.F32 S25,=0.5;
+	;Iterations for further three sets of inputs
+	ADD R9, R9,#1
+	CMP R9,#1
+	BEQ Data_Set2
+	CMP R9,#2
+	BEQ Data_Set3
+	CMP R9,#3
+	BEQ Data_Set4
+	MOV R9,#0
+	ADD R10, R10,#1
 	
-	MOV R10, #3	;Select the value according to the logic to be implemented.
-	BAL switch_case
-		
-switch_case		; switch-case equivalent
-
-	CMP R10,#0	;Go to logic AND  
-	BEQ AND_logic
-
+	;Iterations for LOGIC GATES
 	CMP R10,#1	;Go to logic OR 
 	BEQ OR_logic
 
@@ -37,107 +174,6 @@ switch_case		; switch-case equivalent
 	CMP R10,#4	;Go to logic NOR 
 	BEQ NOR_logic
 
-	CMP R10,#5      ;Go to logic XOR 
-	BEQ XOR_logic
-
-	CMP R10,#6	;Go to logic XNOR 
-	BEQ XNOR_logic
-	
-AND_logic
-	VLDR.F32 S7,=-0.1  ;Initializing values as per the data given in python file
-	VLDR.F32 S8,=0.2
-	VLDR.F32 S9,=0.2
-	VLDR.F32 S10,=-0.2
-	B compute
-		
-OR_logic
-	VLDR.F32 S7,=-0.1  ;Initializing values as per the data given in python file
-	VLDR.F32 S8,=0.7
-	VLDR.F32 S9,=0.7
-	VLDR.F32 S10,=-0.1
-	B compute
-		
-NOT_logic
-	VLDR.F32 S7,=0.5  ;Initializing values as per the data given in python file
-	VLDR.F32 S8,=-0.7
-	VLDR.F32 S9,=0
-	VLDR.F32 S10,=0.1
-	B compute
-		
-NAND_logic
-	VLDR.F32 S7,=0.6  ;Initializing values as per the data given in python file
-	VLDR.F32 S8,=-0.8
-	VLDR.F32 S9,=-0.8
-	VLDR.F32 S10,=0.3
-	B compute
-		
-NOR_logic
-	VLDR.F32 S7,=0.5  ;Initializing values as per the data given in python file
-	VLDR.F32 S8,=-0.7
-	VLDR.F32 S9,=-0.7
-	VLDR.F32 S10,=0.1
-	B compute
-		
-XOR_logic		
-	VLDR.F32 S7,=-5  ;Initializing values as per the data given in python file
-	VLDR.F32 S8,=20
-	VLDR.F32 S9,=10
-	VLDR.F32 S10,=1
-	B compute
-
-XNOR_logic
-	VLDR.F32 S7,=-5  ;Initializing values as per the data given in python file
-	VLDR.F32 S8,=20
-	VLDR.F32 S9,=10
-	VLDR.F32 S10,=1
-	B compute  
-
-compute	VLDR.F32 S16,=1 ;input A of logic gate
-	VLDR.F32 S17,=0		;input B of logic gate
-	VLDR.F32 S18,=0		;input C of logic gate
-
-	VMUL.F32 S19,S7,S16;
-	VMUL.F32 S20,S8,S17;
-	VMUL.F32 S21,S9,S18;
-
-	VADD.F32 S22,S19,S20
-	VADD.F32 S22,S22,S21
-	VADD.F32 S22,S22,S10      ;Final value of x is computed and stored in register S22
-	VMOV.F32 S2, S22;
-	B exp
-				
-exp   CMP R2,R3; 	Compare values of 'i' and 'n' 
-      BLE loop; 	if i < n goto loop
-      B sigmoid_func;		else goto sigmoid function
-		
-loop  VMUL.F32 S1,S1,S2; temp = temp*x
-	  VMOV.F32 S3,S1;
-      VMOV.F32 S5,R2; 	Moving bitstream from register R2 to floating register S5
-      VCVT.F32.U32 S5, S5;	Converting bitstream into floating point number
-		
-	VMUL.F32 S6,S6,S5;	Computing factorial and store result in S6
-        VDIV.F32 S3,S3,S6;	Divide temp by factorial S6 and store it back in temp
-        VADD.F32 S0,S0,S3;	Final exponential series result is stored in S0
-		
-        ADD R2,R2,#1;	Increment the counter variable 'i'
-        B exp;	Again goto comparison
-
-sigmoid_func
-	VADD.F32 s14,s4,s0 ;	Calculating (1 + e^x)
-	VDIV.F32 S15,S0,S14;	Calculating value of sigmoid (e^x/(1+e^x))
-	
-	;VCVT.U32.F32 S15,S15
-	VCMP.F32 S15,S25;	Comparing the result of sigmoid function with 0.5
-	VMRS APSR_NZCV, FPSCR
-	
-	BGT grt   ; Branch if S15 > 0.5
-	
-	MOV R0,#0;	If value of S15 <0.5 then move 0 into R0
-	BL printMsg;	
-	B stop
-	
-grt MOV R0,#1; If value of S15 > 0.5 then move 1 into R0
-	BL printMsg;	
 	B stop
 		
 stop    B stop
