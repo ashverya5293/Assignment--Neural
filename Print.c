@@ -1,118 +1,163 @@
-#include "TM4C123GH6PM.h"
+#include "stm32f4xx.h"
 #include <string.h>
-void printMsg(const int a)
+void printMsg1(const int a)
 {
 	 char Msg[100];
 	 char *ptr;
-	 sprintf(Msg, "Output Logic: %d\n", a);
+	sprintf(Msg,"\n Logic Function: AND");
 	 ptr = Msg ;
-   while(*ptr != '\0'){
+   while(*ptr != '\0')
+	 {
       ITM_SendChar(*ptr);
       ++ptr;
    }
-}
+	 sprintf(Msg, "%x", a);
+	 ptr = Msg ;
+   }
+
+	 void printMsg2(const int a)
+{
+	 char Msg[100];
+	 char *ptr;
+	sprintf(Msg,"\n Logic Function: OR");
+	 ptr = Msg ;
+   while(*ptr != '\0')
+	 {
+      ITM_SendChar(*ptr);
+      ++ptr;
+   }
+	 sprintf(Msg, "%x", a);
+	 ptr = Msg ;
+   }
+
+void printMsg3(const int a)
+{
+	 char Msg[100];
+	 char *ptr;
+	 sprintf(Msg,"\n Logic Function: NOT");
+	 ptr = Msg ;
+   while(*ptr != '\0')
+	 {
+      ITM_SendChar(*ptr);
+      ++ptr;
+   }
+	 sprintf(Msg, "%x", a);
+	 ptr = Msg ;
+   }	
+
+void printMsg4(const int a)
+{
+	 char Msg[100];
+	 char *ptr;
+	 sprintf(Msg,"\n Logic Function: NAND");
+	 ptr = Msg ;
+   while(*ptr != '\0')
+	 {
+      ITM_SendChar(*ptr);
+      ++ptr;
+   }
+	 sprintf(Msg, "%x", a);
+	 ptr = Msg ;
+   }	 
+
+void printMsg5(const int a)
+{
+	 char Msg[100];
+	 char *ptr;
+	 sprintf(Msg,"\n Logic Function: NOR");
+	 ptr = Msg ;
+   while(*ptr != '\0')
+	 {
+      ITM_SendChar(*ptr);
+      ++ptr;
+   }
+	 sprintf(Msg, "%x", a);
+	 ptr = Msg ;
+   }	 
+
 void printMsg2p(const int a, const int b)
 {
 	 char Msg[100];
 	 char *ptr;
-	sprintf(Msg, "%d\n", a);
+	 sprintf(Msg, "%x", a);
 	 ptr = Msg ;
    while(*ptr != '\0')
 	 {
       ITM_SendChar(*ptr);
       ++ptr;
    }
-	 sprintf(Msg, "%d\n", b);
+	 sprintf(Msg, "%x", b);
 	 ptr = Msg ;
    while(*ptr != '\0')
 	 {
       ITM_SendChar(*ptr);
       ++ptr;
    }
-	
 }
 
-void printMsg4p(const int a, const int b, const int c, const int d, const int e)
+void printMsg4p(const int a, const int b, const int c, const int d)
 {
 	 char Msg[100];
 	 char *ptr;
-	 // Printing the message
-	sprintf(Msg,"\nY-Coordinate(with offset 240) : ");
+	 // Printing the first input A
+	sprintf(Msg,"\n A:");
 	 ptr = Msg ;
    while(*ptr != '\0')
 	 {
       ITM_SendChar(*ptr);
       ++ptr;
    }
-	 //Printing the first parameter
-	 sprintf(Msg, "%d", a);
+	 sprintf(Msg, "%x", a);
 	 ptr = Msg ;
    while(*ptr != '\0')
 	 {
       ITM_SendChar(*ptr);
       ++ptr;
    }
-	 // Printing the message
-	 sprintf(Msg,"\nX-coordinate(with offset 240) :");
+	 // Printing the second input B
+	 sprintf(Msg,"\t B:");
 	 ptr = Msg ;
    while(*ptr != '\0')
 	 {
       ITM_SendChar(*ptr);
       ++ptr;
    }
-	 sprintf(Msg, "%d", b);
+	 sprintf(Msg, "%x", b);
 	 ptr = Msg ;
    while(*ptr != '\0')
 	 {
       ITM_SendChar(*ptr);
       ++ptr;
    }
-	 // Printing the message
-	 sprintf(Msg,"\nTheta(degree) :");
+	 // Printing the third input C
+	 sprintf(Msg,"\t C:");
 	 ptr = Msg ;
    while(*ptr != '\0')
 	 {
       ITM_SendChar(*ptr);
       ++ptr;
    }
-	 sprintf(Msg, "%d", c);
+	 sprintf(Msg, "%x", c);
 	 ptr = Msg ;
    while(*ptr != '\0')
 	 {
       ITM_SendChar(*ptr);
       ++ptr;
    }
-	 // Printing the message
-	 sprintf(Msg,"\tRadius (in pixels): ");
+	 // Printing the Output Y
+	 sprintf(Msg,"\t Output Y:");
 	 ptr = Msg ;
    while(*ptr != '\0')
 	 {
       ITM_SendChar(*ptr);
       ++ptr;
    }
-	 sprintf(Msg, "%d", d);
+	 sprintf(Msg, "%x", d);
 	 ptr = Msg ;
    while(*ptr != '\0')
 	 {
       ITM_SendChar(*ptr);
       ++ptr;
 	 }
-
-	 /* Printing the message
-	 //sprintf(Msg,"\nPrinting Fifth parameter e (check this value is correct or not): ");
-	 ptr = Msg ;
-   while(*ptr != '\0')
-	 {
-      ITM_SendChar(*ptr);
-      ++ptr;
-   }
-
-	  //sprintf(Msg, "%x", e);
-	 ptr = Msg ;
-   while(*ptr != '\0')
-	 {
-      ITM_SendChar(*ptr);
-      ++ptr;
-   }*/
+	
 }
-
